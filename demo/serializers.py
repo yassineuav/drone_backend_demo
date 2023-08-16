@@ -36,13 +36,19 @@ class HistoryStatusSerializer(serializers.ModelSerializer):
         # depth = 1
 
 
-class OrderSerializer(serializers.ModelSerializer):
-    # status_history = HistoryStatusSerializer(many=True, read_only=True)
-    status_history = serializers.SerializerMethodField()
+class OrderHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderHistory
+        fields = ['status', 'status_id', 'created_at', 'updated_at', 'description', 'comment', 'updated_from']
 
-    def get_status_history(self, obj):
-        order_histories = OrderHistory.objects.filter(order_history_id=obj)
-        return HistoryStatusSerializer(order_histories, many=True).data
+
+class OrderSerializer(serializers.ModelSerializer):
+    order_history = OrderHistorySerializer(many=True, read_only=True)
+    # status_history = serializers.SerializerMethodField()
+    #
+    # def get_status_history(self, obj):
+    #     order_histories = OrderHistory.objects.filter(order_history_id=obj)
+    #     return HistoryStatusSerializer(order_histories, many=True, read_only=True).data
 
     # status, _created = OrderHistory.objects.get_or_create(order_history_id=instance.id)
     # print(f'creating new status {status}  | else _created {_created}')
@@ -56,8 +62,12 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         # fields = '__all__'
-        fields = ['id', 'weight', 'description', 'trigger', 'updated_at', 'status', 'status_id', 'status_history']
-        depth = 1
-
+        # fields = ['id', 'weight', 'description', 'trigger', 'updated_at', 'status', 'status_id', 'order_history']
+        # depth = 1
+        fields = [
+            'id', 'order_description',
+            'description', 'weight', 'trigger', 'created_at', 'updated_at', 'status',
+            'status_id', 'order_history'
+        ]
 
 

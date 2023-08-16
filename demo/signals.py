@@ -27,9 +27,17 @@ from demo.models import Order, Drone, OrderStatus, OrderHistory
 def handle_order_save(sender, instance, created, **kwargs):
     # post_save.disconnect(handle_post_save, sender=sender)
 
+    def delete_all_orders():
+        print(f"delete all orders ...")
+        Order.objects.all().delete()
+        OrderHistory.objects.all().delete()
+
     def create_status():
         print("creating status history")
-        # status = OrderStatus.objects.get(id=1)
+        # for i in range(1, 5):
+        #     order = Order.objects.create()
+        #     OrderHistory.objects.create(order_history_id=order.id)
+        # # status = OrderStatus.objects.get(id=1)
         # status, _created = OrderHistory.objects.get_or_create(id=1)
         # status, _created = OrderHistory.objects.get_or_create(order_history_id=instance.id)
         # print(f'creating new status {status}  | else _created {_created}')
@@ -57,9 +65,9 @@ def handle_order_save(sender, instance, created, **kwargs):
 
     def set_update():
         status = OrderStatus.objects.count()
-        time.sleep(2)
+        # time.sleep(1)
         if instance.status_id != status:
-            print("updating status & adding next status_history")
+            # print("updating status & adding next status_history")
             for index in range(1, status):
                 if instance.status_id == index:
                     # time.sleep(2)
@@ -79,11 +87,17 @@ def handle_order_save(sender, instance, created, **kwargs):
 
     if created:
         print(f'New record inserted: id: {instance.id} Status {instance.status} update_at {instance.updated_at}', )
-        create_status()
+        # create_status()
+        if instance.status_id != 15:
+            update_thread = threading.Thread(target=set_update, args=())
+            # update_thread.run()
+            update_thread.start()
     else:
         print(f'Record updated: id: {instance.id} Status {instance.status} update_at {instance.updated_at}', )
         if instance.trigger == 0:
             set_status_pending()
+        if instance.trigger == 111:
+            delete_all_orders()
             # create_status()
         else:
             # set_update()

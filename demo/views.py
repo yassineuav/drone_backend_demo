@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import viewsets
 
 from .models import Drone, DroneTest, Order, OrderHistory, OrderStatus, Coordinates
@@ -31,7 +30,10 @@ class OrderHistoryViewSet(viewsets.ModelViewSet):
 
 
 class OrderViewSet(viewsets.ModelViewSet):
+    # queryset = Order.objects.all()
+    # queryset = Order.objects.prefetch_related('status_history_set').all()
+    # queryset = Order.objects.select_related('orderhistory_set').all()
+    queryset = Order.objects.prefetch_related('order_history').all()
     serializer_class = OrderSerializer
-    queryset = Order.objects.all()
 
 

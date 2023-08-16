@@ -61,9 +61,10 @@ class SystemHistory(models.Model):
 # hint
 class OrderStatus(models.Model):
     status = models.CharField(max_length=250, default="pending")
-    updated = models.BooleanField(default=False)
+    updated = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
 
 
 class Order(models.Model):
@@ -93,7 +94,7 @@ class OrderHistory(models.Model):
     description = models.TextField(default="no description")
     comment = models.TextField(default="no comment")
     updated_from = models.CharField(max_length=200, default="programmer")
-    order_history = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order_history = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_history')
 
 
 def get_default_status():
