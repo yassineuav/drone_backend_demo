@@ -33,7 +33,7 @@ class Drone(models.Model):
     # coordinates = models.OneToOneField(Coordinates, on_delete=models.CASCADE)
     latitude = models.DecimalField(max_digits=20, decimal_places=7, default="37.5566056")
     longitude = models.DecimalField(max_digits=20, decimal_places=7, default="-122.0287363")
-    battery = models.IntegerField(default=0)
+    battery = models.IntegerField(default=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

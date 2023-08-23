@@ -9,20 +9,6 @@ from django.dispatch import receiver
 from demo.models import Order, Drone, OrderStatus, OrderHistory
 
 
-# if the status pending
-# check the weight if the wight < 50 and last update < 2 minutes
-# else return notification to admin dashboard weight is to heavy
-#
-# check if drones on
-# select one with battery 100%
-# calculate distance and way
-
-
-# @receiver(m2m_changed, sender=Order.)
-# def create_status_history(sender, instance, action, reverse, **kwargs):
-#     print(f'action : {action} | instance : {action}')
-
-
 @receiver(post_save, sender=Order)
 def handle_order_save(sender, instance, created, **kwargs):
     # post_save.disconnect(handle_post_save, sender=sender)
@@ -65,7 +51,7 @@ def handle_order_save(sender, instance, created, **kwargs):
 
     def set_update():
         status = OrderStatus.objects.count()
-        # time.sleep(1)
+        time.sleep(1)
         if instance.status_id != status:
             # print("updating status & adding next status_history")
             for index in range(1, status):
@@ -83,12 +69,12 @@ def handle_order_save(sender, instance, created, **kwargs):
                     print(f'status {instance.status} -> next {update_status.status}')
                     # instance.status_history.add(my_status)
                     instance.save()
-                    return instance
+                    # return instance
 
     if created:
         print(f'New record inserted: id: {instance.id} Status {instance.status} update_at {instance.updated_at}', )
         # create_status()
-        if instance.status_id != 15:
+        if instance.status_id != 15 and instance.trigger == 222:
             update_thread = threading.Thread(target=set_update, args=())
             # update_thread.run()
             update_thread.start()
@@ -96,10 +82,10 @@ def handle_order_save(sender, instance, created, **kwargs):
         print(f'Record updated: id: {instance.id} Status {instance.status} update_at {instance.updated_at}', )
         if instance.trigger == 0:
             set_status_pending()
-        if instance.trigger == 111:
+        elif instance.trigger == 111:
             delete_all_orders()
             # create_status()
-        else:
+        elif instance.trigger == 10:
             # set_update()
             update_thread = threading.Thread(target=set_update, args=())
             # update_thread.run()
@@ -161,18 +147,36 @@ def create_order_status(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=Drone)
 def handle_post_save(sender, instance, created, **kwargs):
+
+    def create_drones():
+        for i in range(1, 10):
+            Drone.objects.create(name=f'drone_AA_0{i}')
+            print(f"drone_AA_0{i} created")
+        else:
+            print(f"10 drones exist!!")
     if created:
+        count = Drone.objects.count()
+        if count <= 1:
+            create_drones()
         print("New record inserted:", instance.status)
     else:
         print("Record updated: Status", instance.status)
 
 
-@receiver(post_delete, sender=Order)
+@receiver(post_delete, sender=Drone)
 def handle_post_delete(sender, instance, **kwargs):
     print("Record deleted:", instance)
 
+    def delete_all():
+        count = Drone.objects.count()
+        print(f"drones found ... {count}")
+        if count > 0:
+            print("delete all drones objects")
+            Drone.objects.all().delete()
 
-@receiver(pre_delete, sender=Order)
+    delete_all()
+
+@receiver(pre_delete, sender=Drone)
 def handle_pre_delete(sender, instance, **kwargs):
     print("About to delete record:", instance)
 
