@@ -78,6 +78,7 @@ def handle_order_save(sender, instance, created, **kwargs):
             update_thread = threading.Thread(target=set_update, args=())
             # update_thread.run()
             update_thread.start()
+            update_thread.join()
 
     else:
         print(f'Record updated: id: {instance.id} Status {instance.status} update_at {instance.updated_at}', )
@@ -91,6 +92,7 @@ def handle_order_save(sender, instance, created, **kwargs):
             update_thread = threading.Thread(target=set_update, args=())
             # update_thread.run()
             update_thread.start()
+            update_thread.join()
 
         # Connect the signal handler using Django's signal framework
         # my_signal.connect(signal_handler)
@@ -142,6 +144,7 @@ def create_order_status(sender, instance, created, **kwargs):
         # set_update()
         # update_thread = threading.Thread(target=set_update, args=())
         # update_thread.run()
+        # updatr_thread.joint()
 
 
 
