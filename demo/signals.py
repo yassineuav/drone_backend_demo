@@ -78,6 +78,7 @@ def handle_order_save(sender, instance, created, **kwargs):
             update_thread = threading.Thread(target=set_update, args=())
             # update_thread.run()
             update_thread.start()
+
     else:
         print(f'Record updated: id: {instance.id} Status {instance.status} update_at {instance.updated_at}', )
         if instance.trigger == 0:
