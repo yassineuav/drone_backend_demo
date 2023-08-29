@@ -51,12 +51,12 @@ def handle_order_save(sender, instance, created, **kwargs):
 
     def set_update():
         status = OrderStatus.objects.count()
-        time.sleep(1)
+        # time.sleep(1)
         if instance.status_id != status:
             # print("updating status & adding next status_history")
             for index in range(1, status):
                 if instance.status_id == index:
-                    # time.sleep(2)
+                    time.sleep(2)
                     next_status = index + 1
                     update_status = OrderStatus.objects.get(id=next_status)
                     instance.status = update_status.status
@@ -75,10 +75,11 @@ def handle_order_save(sender, instance, created, **kwargs):
         print(f'New record inserted: id: {instance.id} Status {instance.status} update_at {instance.updated_at}', )
         # create_status()
         if instance.status_id != 15 and instance.trigger == 222:
+            # time.sleep(1)
             update_thread = threading.Thread(target=set_update, args=())
             # update_thread.run()
             update_thread.start()
-            update_thread.join()
+            # update_thread.join()
 
     else:
         print(f'Record updated: id: {instance.id} Status {instance.status} update_at {instance.updated_at}', )
